@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 
 import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
@@ -8,9 +8,12 @@ import rootReducers from './reducers'
 let store = createStore(
   rootReducers,
   {},
-  applyMiddleware(
-    thunkMiddleware,
-    loggerMiddleware
+  compose(
+    applyMiddleware(
+      thunkMiddleware,
+      loggerMiddleware
+    ),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 )
 
