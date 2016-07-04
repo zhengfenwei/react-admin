@@ -4,23 +4,36 @@ var webpack = require('webpack');
 module.exports = {
   devtool: '#eval-source-map',
   resolve: {
+    root: [
+      path.resolve('src')
+    ],
     fallback: [path.join(__dirname, 'node_modules')],
-    alias: {
-      'src': path.resolve(__dirname, 'src')
-    }
   },
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './src/index'
-  ],
+  entry: {
+    app: [
+      'webpack-dev-server/client?http://localhost:3000',
+      'webpack/hot/only-dev-server',
+      './src/index'
+    ],
+    vendor: [
+      'lodash',
+      'jquery'
+    ]
+  },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].js',
     publicPath: '/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      'window.$': 'jquery',
+      '_': 'lodash'
+    })
   ],
   module: {
     loaders: [{

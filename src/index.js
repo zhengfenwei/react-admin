@@ -4,12 +4,17 @@ import {Router, Route, Link, hashHistory, browserHistory} from 'react-router'
 
 import App from './App'
 import Playground from './playground'
-
-require('bootstrap/dist/css/bootstrap.css')
+import Posts from './module/posts'
 
 render((
   <Router history={browserHistory}>
-    <Route path="/" component={App}></Route>
-    <Route path="playground" component={Playground}></Route>
+    <Route path="/" component={App}>
+      <Route path="playground" component={Playground}></Route>
+      <Route path="posts" component={Posts}></Route>
+    </Route>
   </Router>
-), document.getElementById('root'))
+), document.getElementById('app'))
+
+
+require('bootstrap/dist/css/bootstrap.css')
+// require('rc-table/assets/index.css')
