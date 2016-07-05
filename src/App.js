@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AppStage from 'layout/AppStage'
+import AppStage from 'appStage.js'
 
 import { Provider } from 'react-redux'
 import store from './store'
