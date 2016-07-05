@@ -47,3 +47,12 @@ function fetchTable(path) {
 export function fetchTableIfNeed(path) {
   return fetchTable(path)
 }
+
+export const CHANGE_PAGE_INDEX = 'CHANGE_PAGE_INDEX'
+export function changePageIndex(path, pageIndex) {
+  return {
+    type: CHANGE_PAGE_INDEX,
+    payload: { pageIndex },
+    meta: { path }
+  }
+}

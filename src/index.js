@@ -18,3 +18,4 @@ render((
 
 require('bootstrap/dist/css/bootstrap.css')
 require('rc-table/assets/index.css')
+require('rc-pager/assets/bootstrap.css')

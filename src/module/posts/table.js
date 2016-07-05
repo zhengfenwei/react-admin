@@ -1,26 +1,41 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { fetchTableIfNeed } from 'store/actions'
 
 import Table from 'rc-table'
+import Pager from 'rc-pager'
 
 class Posts extends Component {
   constructor(props) {
     super(props)
+
+    this.state = this.getInitState()
   }
 
-  componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(fetchTableIfNeed('posts'))
+  getInitState() {
+    return {
+      items: [],
+      pageIndex: 0,
+      totalPage: 0
+    }
   }
 
   render() {
+    if (this.props.isFetching) {
+      return <span>loading...</span>
+    }
+
     return (
-      (this.props.items.length ?
+      <div>
+        {
           <Table columns={this.getColumnsData()} data={this.props.items}></Table>
-          :
-          <span>loading...</span>
-      )
+        }
+        {
+          <Pager
+            total={this.props.totalPage}
+            current={this.props.pageIndex}
+            onSkipTo={this.pageIndexChange.bind(this)}
+          ></Pager>
+        }
+      </div>
     )
   }
 
@@ -45,20 +60,10 @@ class Posts extends Component {
       }
     }]
   }
+
+  pageIndexChange(pageIndex) {
+
+  }
 }
 
-function select(state) {
-  const { tableByPath={} } = state
-  const {
-    isFetching,
-    items
-  } = tableByPath['posts'] || {
-    isFetching: true,
-    items: []
-  }
-  return {
-    isFetching,
-    items
-  }
-}
-export default connect(select)(Posts)
+export default Posts

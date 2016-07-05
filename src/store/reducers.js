@@ -2,7 +2,8 @@ import { combineReducers } from 'redux'
 import {
   REQUEST_TABLE,
   RECEIVE_TABLE,
-  SELECT_PATH
+  SELECT_PATH,
+  CHANGE_PAGE_INDEX
 } from './actions'
 
 function selectedPath(state='posts', action) {
@@ -17,7 +18,9 @@ function selectedPath(state='posts', action) {
 const defaultState = {
   isFetch: false,
   didInvalidate: false,
-  items: []
+  items: [],
+  pageIndex: 0,
+  totalPage: 0
 }
 
 function table(state = defaultState, action) {
@@ -51,6 +54,10 @@ function tableByPath(state = {}, action) {
     default:
       return state
   }
+}
+
+function pageIndexChanged(state=0, action) {
+  
 }
 
 export default combineReducers({
