@@ -1,64 +1,122 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { fetchTableIfNeed } from 'store/actions'
 
-import Table from 'rc-table'
+import TableView from './table'
+import EditView from './edit'
 
-class Posts extends Component {
+export default class Posts extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      params: {},
+      query: {},
+      table: {
+        isFetching: false,
+        items: [],
+        pageIndex: 0,
+        totalCount: 0
+      },
+      edit: {
+        open: false,
+        isFetching: false,
+        isSaving: false,
+        params: {},
+        formData: {}
+      }
+    }
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(fetchTableIfNeed('posts'))
+    this.queryTable()
   }
 
   render() {
     return (
-      (this.props.items.length ?
-          <Table columns={this.getColumnsData()} data={this.props.items}></Table>
-          :
-          <span>loading...</span>
-      )
+      <div>
+        <TableView
+          {...this.state.table}
+          onEditBtnClick={this.onEditBtnClick.bind(this)}
+          onPageIndexChange={this.onPageIndexChange.bind(this)}
+        ></TableView>
+        <EditView
+          {...this.state.edit}
+          onClose={this.onEditCloseBtnClick.bind(this)}
+          onSave={this.onEditSaveBtnClick.bind(this)}
+        ></EditView>
+      </div>
     )
   }
 
-  onBtnClick(data) {
-    console.log(data)
+  updateState(scope, data={}) {
+    this.setState(_.merge(this.state, {
+      [scope]: data
+    }))
   }
 
-  getColumnsData() {
-    return [{
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title'
-    }, {
-      title: '操作',
-      key: 'ops',
-      render: (text, data) => {
-        return (
-          <button className="btn btn-link"
-                  onClick={this.onBtnClick.bind(this, data)}
-          >操作</button>
-        )
+  //Table
+
+  queryTable() {
+    let root = 'http://jsonplaceholder.typicode.com'
+    let path = 'posts'
+
+    this.setState(_.merge(this.state, {
+      table: {
+        isFetching: true
       }
-    }]
-  }
-}
+    }))
 
-function select(state) {
-  const { tableByPath={} } = state
-  const {
-    isFetching,
-    items
-  } = tableByPath['posts'] || {
-    isFetching: true,
-    items: []
+    return $.ajax({
+      url: `${root}/${path}`,
+      data: {
+        // _start: state.table.pageIndex * state.table.pageSize,
+        _limit: 20
+      },
+      context: this
+    }).then(items => {
+      this.updateState('table',{
+        isFetching: false,
+        items,
+        totalCount: 300
+      })
+    })
   }
-  return {
-    isFetching,
-    items
+
+  onPageIndexChange(index) {
+    this.updateState('table', {
+      pageIndex: index - 1
+    })
+    this.queryTable()
+  }
+
+  //Edit
+  onEditBtnClick(data) {
+    this.updateState('edit', {
+      open: true,
+      isFetching: true,
+      params: {...data}
+    })
+    setTimeout(() => {
+      this.updateState('edit', {
+        isFetching: false,
+        formData: data
+      })
+    }, 3000)
+  }
+  onEditCloseBtnClick() {
+    this.updateState('edit', {
+      open: false
+    })
+  }
+  onEditSaveBtnClick() {
+    this.updateState('edit', {
+      isSaving: true
+    })
+    setTimeout(() => {
+      this.updateState('edit', {
+        isSaving: false,
+        open: false
+      })
+      this.queryTable()
+    }, 3000)
   }
 }
-export default connect(select)(Posts)

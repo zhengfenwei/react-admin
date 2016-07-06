@@ -1,21 +1,11 @@
 import React, { Component } from 'react'
 
 import Table from 'rc-table'
-import Pager from 'rc-pager'
+import Pagination from 'rc-pagination'
 
-class Posts extends Component {
+export default class TableView extends Component {
   constructor(props) {
     super(props)
-
-    this.state = this.getInitState()
-  }
-
-  getInitState() {
-    return {
-      items: [],
-      pageIndex: 0,
-      totalPage: 0
-    }
   }
 
   render() {
@@ -25,22 +15,32 @@ class Posts extends Component {
 
     return (
       <div>
-        {
-          <Table columns={this.getColumnsData()} data={this.props.items}></Table>
-        }
-        {
-          <Pager
-            total={this.props.totalPage}
-            current={this.props.pageIndex}
-            onSkipTo={this.pageIndexChange.bind(this)}
-          ></Pager>
-        }
+        {this.renderTable()}
+        {this.renderPager()}
       </div>
     )
   }
-
-  onBtnClick(data) {
-    console.log(data)
+  renderTable() {
+    return (
+      <div>
+        <Table columns={this.getColumnsData()} data={this.props.items}>
+        </Table>
+      </div>
+    )
+  }
+  renderPager() {
+    return (
+      <Pagination
+        showQuickJumper
+        showTotal={total => {
+              return `共 ${total} 条数据`
+            }}
+        current={this.props.pageIndex+1}
+        total={this.props.totalCount}
+        pageSize={20}
+        onChange={this.props.onPageIndexChange}
+      ></Pagination>
+    )
   }
 
   getColumnsData() {
@@ -54,16 +54,13 @@ class Posts extends Component {
       render: (text, data) => {
         return (
           <button className="btn btn-link"
-                  onClick={this.onBtnClick.bind(this, data)}
+                  onClick={()=> {
+                    this.props.onEditBtnClick(data)
+                  }}
           >操作</button>
         )
       }
     }]
   }
 
-  pageIndexChange(pageIndex) {
-
-  }
 }
-
-export default Posts

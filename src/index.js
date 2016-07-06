@@ -1,5 +1,5 @@
 import React from 'react'
-import {render} from 'react-dom'
+import { render } from 'react-dom'
 import {Router, Route, Link, hashHistory, browserHistory} from 'react-router'
 
 import App from './app'
@@ -18,4 +18,6 @@ render((
 
 require('bootstrap/dist/css/bootstrap.css')
 require('rc-table/assets/index.css')
-require('rc-pager/assets/bootstrap.css')
+require('rc-pagination/assets/index.css')
+require('rc-dialog/assets/bootstrap.css')
+require('rc-select/assets/index.css')
